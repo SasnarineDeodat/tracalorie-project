@@ -10,7 +10,7 @@ class CalorieTracker {
     this._displayCaloriesConsumed();
     this._displayCaloriesBurned();
     this._displayCaloriesRemaining();
-    this._displayCalorieProgress();
+    this._displayCaloriesProgress();
   }
 
   addMeal(meal) {
@@ -72,7 +72,6 @@ class CalorieTracker {
       progressEl.classList.add('bg-success');
     }
   }
-}
 
   _displayCaloriesProgress() {
     const progressEl = document.getElementById('calorie-progress');
@@ -106,14 +105,73 @@ class Workout {
   }
 }
 
-const tracker = new CalorieTracker();
+class App {
+  constructor() {
+    this._tracker = new CalorieTracker();
 
-const breakfast = new Meal('Breakfast', 400);
-tracker.addMeal(breakfast);
+    document
+      .getElementById('meal-form')
+      .addEventListener('submit', this._newMeal.bind(this, 'meal'));
 
-const run = new Workout('Morning Run', 320);
-tracker.addWorkout(run);
+    document
+      .getElementById('workout-form')
+      .addEventListener('submit', this._newWorkout.bind(this, 'workout'));
+  }
 
-console.log(tracker._meals);
-console.log(tracker._workouts);
-console.log(tracker._totalCalories);
+  _newMeal(e) {
+    e.preventDefault();
+    console.log(1);
+    const name = document.getElementById('meal-name');
+    const calories = document.getElementById('meal-calories');
+
+    if (name.value === '' || calories.value === '') {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    // Create a new meal
+    const meal = new Meal(name.value, +calories.value);
+
+    // Add the meal to the tracker
+    this._tracker.addMeal(meal);
+
+    // Clear the form
+    name.value = '';
+    calories.value = '';
+
+    // Collapse the form
+    const collapseMeal = document.getElementById('collapse-meal');
+    const bsCollapse = new bootstrap.Collapse(collapseMeal, {
+      toggle: true,
+    });
+  }
+
+  _newWorkout(e) {
+    e.preventDefault();
+    const name = document.getElementById('workout-name');
+    const calories = document.getElementById('workout-calories');
+
+    if (name.value === '' || calories.value === '') {
+      alert('Please fill in all fields');
+      return;
+    }
+
+    // Create a new workout
+    const workout = new Workout(name.value, +calories.value);
+
+    // Add the workout to the tracker
+    this._tracker.addWorkout(workout);
+
+    // Clear the form
+    name.value = '';
+    calories.value = '';
+
+    // Collapse the form
+    const collapseWorkout = document.getElementById('collapse-workout');
+    const bsCollapse = new bootstrap.Collapse(collapseWorkout, {
+      toggle: true,
+    });
+  }
+}
+
+const app = new App();
